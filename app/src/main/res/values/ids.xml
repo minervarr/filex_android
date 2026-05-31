@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="ctx_properties" type="id" />
+    <item name="ctx_copy_path"  type="id" />
+    <item name="ctx_rename"     type="id" />
+    <item name="ctx_copy"       type="id" />
+    <item name="ctx_move"       type="id" />
+    <item name="ctx_delete"     type="id" />
+    <item name="ctx_compress"   type="id" />
+    <item name="ctx_extract"    type="id" />
+</resources>

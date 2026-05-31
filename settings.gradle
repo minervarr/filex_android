@@ -15,3 +15,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "filex"
 include ':app'
+
+// archive_engine submodule — included as a local composite module
+include ':archive_engine:archive_engine'
+project(':archive_engine:archive_engine').projectDir = file('archive_engine/archive_engine')

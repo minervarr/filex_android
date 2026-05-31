@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_new_folder"
+        android:title="New folder"
+        android:icon="@android:drawable/ic_menu_add"
+        app:showAsAction="ifRoom" />
+
+    <!-- Visible only when clipboard is set; toggled in code -->
+    <item
+        android:id="@+id/action_paste"
+        android:title="Paste here"
+        app:showAsAction="ifRoom"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/action_sort"
+        android:title="Sort…"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_toggle_hidden"
+        android:title="Show hidden files"
+        app:showAsAction="never" />
+
+</menu>

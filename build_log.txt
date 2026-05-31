@@ -1,0 +1,110 @@
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :archive_engine:archive_engine:preBuild UP-TO-DATE
+> Task :archive_engine:archive_engine:preDebugBuild UP-TO-DATE
+> Task :archive_engine:archive_engine:writeDebugAarMetadata UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :archive_engine:archive_engine:generateDebugResValues UP-TO-DATE
+> Task :archive_engine:archive_engine:generateDebugResources UP-TO-DATE
+> Task :archive_engine:archive_engine:packageDebugResources UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :archive_engine:archive_engine:extractDeepLinksDebug UP-TO-DATE
+> Task :archive_engine:archive_engine:processDebugManifest UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :archive_engine:archive_engine:compileDebugLibraryResources UP-TO-DATE
+> Task :archive_engine:archive_engine:parseDebugLocalResources UP-TO-DATE
+> Task :archive_engine:archive_engine:generateDebugRFile UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :archive_engine:archive_engine:javaPreCompileDebug UP-TO-DATE
+> Task :archive_engine:archive_engine:compileDebugJavaWithJavac UP-TO-DATE
+> Task :archive_engine:archive_engine:bundleLibCompileToJarDebug UP-TO-DATE
+
+> Task :app:compileDebugJavaWithJavac
+Java compiler version 25 has deprecated support for compiling with source/target version 8.
+Try one of the following options:
+    1. [Recommended] Use Java toolchain with a lower language version
+    2. Set a higher source/target version
+    3. Use a lower version of the JDK running the build (if you're not using Java toolchain)
+For more details on how to configure these settings, see https://developer.android.com/build/jdks.
+To suppress this warning, set android.javaCompile.suppressSourceTargetDeprecationWarning=true in gradle.properties.
+warning: [options] source value 8 is obsolete and will be removed in a future release
+warning: [options] target value 8 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+Note: C:\Users\incxiuefb\Documents\Files\clone\file_explorer_android\app\src\main\java\io\nava\filex\MainActivity.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+3 warnings
+
+> Task :app:mergeDebugShaders UP-TO-DATE
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :archive_engine:archive_engine:mergeDebugShaders UP-TO-DATE
+> Task :archive_engine:archive_engine:compileDebugShaders NO-SOURCE
+> Task :archive_engine:archive_engine:generateDebugAssets UP-TO-DATE
+> Task :archive_engine:archive_engine:packageDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :app:processDebugJavaRes NO-SOURCE
+> Task :archive_engine:archive_engine:processDebugJavaRes NO-SOURCE
+> Task :app:mergeDebugJavaResource UP-TO-DATE
+> Task :app:checkDebugDuplicateClasses UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexDebug UP-TO-DATE
+> Task :archive_engine:archive_engine:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :app:dexBuilderDebug
+> Task :app:mergeLibDexDebug UP-TO-DATE
+> Task :app:configureCMakeDebug[arm64-v8a]
+> Task :app:buildCMakeDebug[arm64-v8a]
+> Task :app:mergeProjectDexDebug
+> Task :app:configureCMakeDebug[x86]
+> Task :app:buildCMakeDebug[x86]
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :archive_engine:archive_engine:configureCMakeDebug[arm64-v8a]
+> Task :archive_engine:archive_engine:buildCMakeDebug[arm64-v8a]
+> Task :archive_engine:archive_engine:configureCMakeDebug[x86]
+> Task :archive_engine:archive_engine:buildCMakeDebug[x86]
+> Task :archive_engine:archive_engine:mergeDebugJniLibFolders UP-TO-DATE
+> Task :archive_engine:archive_engine:mergeDebugNativeLibs UP-TO-DATE
+> Task :archive_engine:archive_engine:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :app:validateSigningDebug UP-TO-DATE
+> Task :app:writeDebugAppMetadata UP-TO-DATE
+> Task :app:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :archive_engine:archive_engine:stripDebugDebugSymbols UP-TO-DATE
+> Task :archive_engine:archive_engine:copyDebugJniLibsProjectAndLocalJars UP-TO-DATE
+> Task :archive_engine:archive_engine:extractDebugAnnotations UP-TO-DATE
+> Task :archive_engine:archive_engine:extractDeepLinksForAarDebug UP-TO-DATE
+> Task :archive_engine:archive_engine:mergeDebugGeneratedProguardFiles UP-TO-DATE
+> Task :archive_engine:archive_engine:mergeDebugConsumerProguardFiles UP-TO-DATE
+> Task :archive_engine:archive_engine:prepareDebugArtProfile UP-TO-DATE
+> Task :archive_engine:archive_engine:prepareLintJarForPublish UP-TO-DATE
+> Task :archive_engine:archive_engine:mergeDebugJavaResource UP-TO-DATE
+> Task :archive_engine:archive_engine:syncDebugLibJars UP-TO-DATE
+> Task :archive_engine:archive_engine:bundleDebugAar UP-TO-DATE
+> Task :archive_engine:archive_engine:assembleDebug UP-TO-DATE
+> Task :app:mergeDebugNativeLibs
+> Task :app:stripDebugDebugSymbols
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect UP-TO-DATE
+> Task :app:assembleDebug
+
+[Incubating] Problems report is available at: file:///C:/Users/incxiuefb/Documents/Files/clone/file_explorer_android/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.5.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3s
+70 actionable tasks: 14 executed, 56 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.5.0/userguide/configuration_cache_enabling.html
