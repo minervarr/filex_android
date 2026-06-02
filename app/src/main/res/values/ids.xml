@@ -7,5 +7,5 @@
     <item name="ctx_move"       type="id" />
     <item name="ctx_delete"     type="id" />
     <item name="ctx_compress"   type="id" />
-    <item name="ctx_extract"    type="id" />
+    <item name="ctx_extract"         type="id" />
 </resources>

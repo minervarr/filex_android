@@ -1,0 +1,7 @@
+# ninja log v5
+1	7345	8020947458626519	CMakeFiles/filex.dir/filex_core.cpp.o	e430502bbe3034d8
+4	214	8020952744547529	build.ninja	2668aebbc7e053e9
+7352	7475	8020947459891086	C:/Users/incxiuefb/Documents/Files/clone/filex_android/app/build/intermediates/cxx/RelWithDebInfo/rz29566c/obj/arm64-v8a/libfilex.so	95adf7c25e7a8358
+1	11	0	clean	4df6011e3672f26a
+8	1524	8020952761371026	CMakeFiles/filex.dir/filex_core.cpp.o	e430502bbe3034d8
+1525	1655	8020952762665807	C:/Users/incxiuefb/Documents/Files/clone/filex_android/app/build/intermediates/cxx/RelWithDebInfo/rz29566c/obj/arm64-v8a/libfilex.so	95adf7c25e7a8358

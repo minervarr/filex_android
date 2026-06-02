@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/incxiuefb/Documents/Files/clone/file_explorer_android/app/src/main/cpp
+# Install script for directory: C:/Users/incxiuefb/Documents/Files/clone/filex_android/app/src/main/cpp
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/incxiuefb/Documents/Files/clone/file_explorer_android/app/.cxx/Debug/d39394n6/arm64-v8a/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/incxiuefb/Documents/Files/clone/filex_android/app/.cxx/Debug/d39394n6/arm64-v8a/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

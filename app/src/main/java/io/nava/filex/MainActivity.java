@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
     private enum SortMode { NAME, SIZE, DATE, TYPE }
 
     // ── Persistent state ──────────────────────────────────────────────────────
+    private boolean   pickerMode = false;
     private SortMode  sortMode   = SortMode.NAME;
     private boolean   showHidden = false;
     private FileNode  clipNode   = null;
@@ -91,9 +92,11 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
         recyclerView  = findViewById(R.id.recyclerView);
         progressBar   = findViewById(R.id.progressBar);
 
+        pickerMode = Intent.ACTION_GET_CONTENT.equals(getIntent().getAction());
+
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("FileX");
+            getSupportActionBar().setTitle(pickerMode ? "Pick a file" : "FileX");
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
@@ -190,6 +193,11 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
             hasLoaded = false;
             loadDirectory(currentPath);
             updateUpButton();
+        } else if (pickerMode) {
+            Intent result = new Intent();
+            result.setData(Uri.fromFile(new File(node.absolutePath)));
+            setResult(RESULT_OK, result);
+            finish();
         } else {
             openFile(node);
         }
@@ -212,13 +220,13 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
         menu.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
             if (id == R.id.ctx_properties) showProperties(node);
-            else if (id == R.id.ctx_copy_path) copyPathToClipboard(node.absolutePath);
-            else if (id == R.id.ctx_rename)    showRenameDialog(node);
-            else if (id == R.id.ctx_copy)      setClipboard(node, false);
-            else if (id == R.id.ctx_move)      setClipboard(node, true);
-            else if (id == R.id.ctx_delete)    confirmDelete(node);
-            else if (id == R.id.ctx_compress)  showCompressDialog(node);
-            else if (id == R.id.ctx_extract)   doExtract(node);
+            else if (id == R.id.ctx_copy_path)        copyPathToClipboard(node.absolutePath);
+            else if (id == R.id.ctx_rename)            showRenameDialog(node);
+            else if (id == R.id.ctx_copy)              setClipboard(node, false);
+            else if (id == R.id.ctx_move)              setClipboard(node, true);
+            else if (id == R.id.ctx_delete)            confirmDelete(node);
+            else if (id == R.id.ctx_compress)          showCompressDialog(node);
+            else if (id == R.id.ctx_extract)           doExtract(node);
             return true;
         });
         menu.show();
