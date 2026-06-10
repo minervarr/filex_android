@@ -1,5 +1,58 @@
+# Gradle
 .gradle/
+gradle-app.setting
+.gradletasknamecache
+
+# Build
 build/
-local.properties
-*.iml
+*.apk
+*.aab
+*.aar
+
+# IDE
 .idea/
+*.iml
+*.iws
+*.ipr
+.classpath
+.c9/
+*.launch
+.settings/
+.vscode/
+*.sublime-workspace
+
+# Android Studio
+captures/
+.externalNativeBuild/
+.cxx/
+local.properties
+
+# Kotlin
+.kotlin/
+*.kotlin_module
+
+# Java
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# OS
+Thumbs.db
+*.swp
+*.swo
+*~
+.project
+.buildpath
+
+# Dependencies
+.m2/
+node_modules/
+
+# Test coverage
+coverage/
+*.lcov
