@@ -8,4 +8,5 @@
     <item name="ctx_delete"     type="id" />
     <item name="ctx_compress"   type="id" />
     <item name="ctx_extract"         type="id" />
+    <item name="ctx_select_all"      type="id" />
 </resources>

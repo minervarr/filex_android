@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.FileObserver;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
@@ -24,7 +25,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.core.view.ViewCompat;
@@ -45,6 +48,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity implements FileAdapter.Listener {
@@ -61,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
     private boolean   showHidden = false;
     private FileNode  clipNode   = null;
     private boolean   clipIsCut  = false;
-    private boolean   hasLoaded  = false; // prevents onResume reload of genuinely empty dirs
+    private boolean   hasLoaded  = false;
 
     // ── Views ─────────────────────────────────────────────────────────────────
     private Toolbar      toolbar;
@@ -78,6 +82,17 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
     private String          currentPath = ROOT;
     private final AtomicBoolean isLoading = new AtomicBoolean(false);
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
+
+    // ── Selection / ActionMode ────────────────────────────────────────────────
+    private ActionMode actionMode = null;
+
+    // ── Auto-refresh ──────────────────────────────────────────────────────────
+    private FileObserver fileObserver = null;
+    private final Runnable reloadRunnable = () -> {
+        if (!isLoading.get() && actionMode == null) {
+            loadDirectory(currentPath);
+        }
+    };
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -131,9 +146,6 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
     @Override
     protected void onResume() {
         super.onResume();
-        // Only load if: permission just granted AND we've never successfully loaded yet.
-        // hasLoaded prevents re-fetching when returning from another app into a real
-        // directory (including genuinely empty ones).
         if (Environment.isExternalStorageManager() && !hasLoaded && !isLoading.get()) {
             loadDirectory(currentPath);
         }
@@ -142,11 +154,16 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (fileObserver != null) fileObserver.stopWatching();
         DebugLogger.close();
     }
 
     @Override
     public void onBackPressed() {
+        if (actionMode != null) {
+            actionMode.finish();
+            return;
+        }
         if (!backStack.isEmpty()) {
             currentPath = backStack.pollLast();
             hasLoaded = false;
@@ -205,8 +222,12 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
 
     @Override
     public void onLongPress(FileNode node, View anchor) {
+        if (actionMode != null) {
+            // Already in selection mode: treat as a toggle (same as tap)
+            onSelectionToggle(node);
+            return;
+        }
         PopupMenu menu = new PopupMenu(this, anchor);
-        // Use IDs instead of string matching
         menu.getMenu().add(0, R.id.ctx_properties, 0, "Properties");
         menu.getMenu().add(0, R.id.ctx_copy_path,  1, "Copy path");
         menu.getMenu().add(0, R.id.ctx_rename,     2, "Rename");
@@ -214,22 +235,83 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
         menu.getMenu().add(0, R.id.ctx_move,       4, "Move");
         menu.getMenu().add(0, R.id.ctx_delete,     5, "Delete");
         menu.getMenu().add(0, R.id.ctx_compress,   6, "Compress");
+        menu.getMenu().add(0, R.id.ctx_select_all, 7, "Select");
         if (isArchive(node.name))
-            menu.getMenu().add(0, R.id.ctx_extract, 7, "Extract here");
+            menu.getMenu().add(0, R.id.ctx_extract, 8, "Extract here");
 
         menu.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.ctx_properties) showProperties(node);
-            else if (id == R.id.ctx_copy_path)        copyPathToClipboard(node.absolutePath);
-            else if (id == R.id.ctx_rename)            showRenameDialog(node);
-            else if (id == R.id.ctx_copy)              setClipboard(node, false);
-            else if (id == R.id.ctx_move)              setClipboard(node, true);
-            else if (id == R.id.ctx_delete)            confirmDelete(node);
-            else if (id == R.id.ctx_compress)          showCompressDialog(node);
-            else if (id == R.id.ctx_extract)           doExtract(node);
+            if (id == R.id.ctx_properties)          showProperties(node);
+            else if (id == R.id.ctx_copy_path)      copyPathToClipboard(node.absolutePath);
+            else if (id == R.id.ctx_rename)          showRenameDialog(node);
+            else if (id == R.id.ctx_copy)            setClipboard(node, false);
+            else if (id == R.id.ctx_move)            setClipboard(node, true);
+            else if (id == R.id.ctx_delete)          confirmDelete(node);
+            else if (id == R.id.ctx_compress)        showCompressDialog(node);
+            else if (id == R.id.ctx_extract)         doExtract(node);
+            else if (id == R.id.ctx_select_all) {
+                actionMode = startSupportActionMode(selectionCallback);
+                adapter.setSelectionMode(true);
+                adapter.toggleSelection(node.absolutePath);
+                updateActionModeTitle();
+            }
             return true;
         });
         menu.show();
+    }
+
+    @Override
+    public void onSelectionToggle(FileNode node) {
+        adapter.toggleSelection(node.absolutePath);
+        if (adapter.getSelectedCount() == 0 && actionMode != null) {
+            actionMode.finish();
+        } else {
+            updateActionModeTitle();
+        }
+    }
+
+    // ── Selection / ActionMode ────────────────────────────────────────────────
+
+    private final ActionMode.Callback selectionCallback = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            menu.add(0, R.id.ctx_delete,     0, "Delete")
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            menu.add(0, R.id.ctx_select_all, 1, "Select all")
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            int id = item.getItemId();
+            if (id == R.id.ctx_delete) {
+                confirmDeleteSelected();
+                return true;
+            }
+            if (id == R.id.ctx_select_all) {
+                adapter.selectAll(currentList);
+                updateActionModeTitle();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            actionMode = null;
+            adapter.setSelectionMode(false);
+        }
+    };
+
+    private void updateActionModeTitle() {
+        if (actionMode != null) {
+            int count = adapter.getSelectedCount();
+            actionMode.setTitle(count + " selected");
+        }
     }
 
     // ── Load ──────────────────────────────────────────────────────────────────
@@ -242,8 +324,6 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
 
         new Thread(() -> {
             FileNode[] nodes = FileManager.listDirectory(path);
-            // Capture error on the SAME thread before posting to main thread.
-            // g_last_error is thread_local in C++; reading it here is correct.
             String err = (nodes == null) ? FileManager.getLastError() : "";
 
             post(() -> {
@@ -258,6 +338,7 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
                 allEntries.clear();
                 allEntries.addAll(Arrays.asList(nodes));
                 applyFilterAndSort();
+                startWatching(path);
                 DebugLogger.d(TAG, "loaded " + nodes.length + " entries");
             });
         }).start();
@@ -305,6 +386,22 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
             .show();
     }
 
+    // ── Auto-refresh ──────────────────────────────────────────────────────────
+
+    private void startWatching(String path) {
+        if (fileObserver != null) fileObserver.stopWatching();
+        int mask = FileObserver.CREATE | FileObserver.DELETE
+                 | FileObserver.MOVED_FROM | FileObserver.MOVED_TO | FileObserver.CLOSE_WRITE;
+        fileObserver = new FileObserver(new File(path), mask) {
+            @Override
+            public void onEvent(int event, @Nullable String name) {
+                mainHandler.removeCallbacks(reloadRunnable);
+                mainHandler.postDelayed(reloadRunnable, 500);
+            }
+        };
+        fileObserver.startWatching();
+    }
+
     // ── Create folder ─────────────────────────────────────────────────────────
 
     private void showCreateFolderDialog() {
@@ -317,7 +414,6 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
                 String name = input.getText().toString().trim();
                 if (name.isEmpty()) return;
                 String newPath = currentPath + "/" + name;
-                // mkdir can block on network filesystems; run off main thread
                 new Thread(() -> {
                     boolean ok = FileManager.createDirectory(newPath);
                     post(() -> {
@@ -373,7 +469,6 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
                 ok = FileManager.renameEntry(src.absolutePath, dst);
                 err = ok ? "" : FileManager.getLastError();
                 if (!ok) {
-                    // Cross-filesystem move: copy + delete
                     ok  = FileManager.copyEntry(src.absolutePath, dst);
                     err = ok ? "" : "copy failed";
                     if (ok) {
@@ -462,7 +557,7 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
             .show();
     }
 
-    // ── Delete ────────────────────────────────────────────────────────────────
+    // ── Delete (single) ───────────────────────────────────────────────────────
 
     private void confirmDelete(FileNode node) {
         new AlertDialog.Builder(this)
@@ -482,6 +577,64 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
             })
             .setNegativeButton("Cancel", null)
             .show();
+    }
+
+    // ── Delete (multi-select) ─────────────────────────────────────────────────
+
+    private void confirmDeleteSelected() {
+        Set<String> paths = adapter.getSelectedPaths();
+        if (paths.isEmpty()) return;
+
+        List<FileNode> toDelete = new ArrayList<>();
+        for (FileNode n : currentList) {
+            if (paths.contains(n.absolutePath)) toDelete.add(n);
+        }
+        if (toDelete.isEmpty()) return;
+
+        // Compute total size on background thread, then show dialog
+        new Thread(() -> {
+            long totalBytes = 0;
+            for (FileNode n : toDelete) {
+                if (n.isDirectory) {
+                    long s = FileManager.directorySize(n.absolutePath);
+                    if (s > 0) totalBytes += s;
+                } else {
+                    totalBytes += n.size;
+                }
+            }
+            final long finalBytes = totalBytes;
+            post(() -> {
+                int count = toDelete.size();
+                String sizeStr = Formatter.formatFileSize(this, finalBytes);
+                String msg = "Delete " + count + " item" + (count == 1 ? "" : "s")
+                           + " (" + sizeStr + ")?\nThis cannot be undone.";
+                new AlertDialog.Builder(this)
+                    .setTitle("Delete")
+                    .setMessage(msg)
+                    .setPositiveButton("Delete", (d, w) -> doDeleteSelected(toDelete))
+                    .setNegativeButton("Cancel", null)
+                    .show();
+            });
+        }).start();
+    }
+
+    private void doDeleteSelected(List<FileNode> nodes) {
+        progressBar.setVisibility(View.VISIBLE);
+        new Thread(() -> {
+            List<String> errors = new ArrayList<>();
+            for (FileNode n : nodes) {
+                boolean ok = FileManager.deleteEntry(n.absolutePath);
+                if (!ok) errors.add(n.name + ": " + FileManager.getLastError());
+            }
+            post(() -> {
+                progressBar.setVisibility(View.GONE);
+                if (actionMode != null) actionMode.finish();
+                loadDirectory(currentPath);
+                if (!errors.isEmpty()) {
+                    showError("Some deletions failed", String.join("\n", errors));
+                }
+            });
+        }).start();
     }
 
     // ── Compress ──────────────────────────────────────────────────────────────
@@ -580,7 +733,6 @@ public class MainActivity extends AppCompatActivity implements FileAdapter.Liste
             getSupportActionBar().setDisplayHomeAsUpEnabled(!backStack.isEmpty());
     }
 
-    /** Post to main thread only if Activity is still alive. */
     private void post(Runnable r) {
         mainHandler.post(() -> {
             if (!isFinishing() && !isDestroyed()) r.run();

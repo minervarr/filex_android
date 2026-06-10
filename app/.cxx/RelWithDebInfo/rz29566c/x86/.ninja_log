@@ -1,7 +1,0 @@
-# ninja log v5
-1	1381	8020947483263887	CMakeFiles/filex.dir/filex_core.cpp.o	45a6c84d4ab13165
-1388	1507	8020947484495329	C:/Users/incxiuefb/Documents/Files/clone/filex_android/app/build/intermediates/cxx/RelWithDebInfo/rz29566c/obj/x86/libfilex.so	c779cd77c6dca9c
-3	169	8020952764165805	build.ninja	506edffea09d7072
-1	9	0	clean	4df6011e3672f26a
-8	1436	8020952780285760	CMakeFiles/filex.dir/filex_core.cpp.o	45a6c84d4ab13165
-1437	1543	8020952781350792	C:/Users/incxiuefb/Documents/Files/clone/filex_android/app/build/intermediates/cxx/RelWithDebInfo/rz29566c/obj/x86/libfilex.so	c779cd77c6dca9c

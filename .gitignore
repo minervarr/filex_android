@@ -1,58 +1,75 @@
-# Gradle
+# ── Gradle ────────────────────────────────────────────────────────────────────
 .gradle/
 gradle-app.setting
 .gradletasknamecache
 
-# Build
+# ── Build output ──────────────────────────────────────────────────────────────
 build/
 *.apk
 *.aab
 *.aar
 
-# IDE
+# ── CMake / NDK ───────────────────────────────────────────────────────────────
+.cxx/
+.externalNativeBuild/
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
 .idea/
 *.iml
 *.iws
 *.ipr
 .classpath
-.c9/
-*.launch
 .settings/
 .vscode/
 *.sublime-workspace
+*.launch
+.c9/
 
-# Android Studio
-captures/
-.externalNativeBuild/
-.cxx/
-local.properties
-
-# Kotlin
+# ── Kotlin ────────────────────────────────────────────────────────────────────
 .kotlin/
 *.kotlin_module
 
-# Java
+# ── Java / JVM ────────────────────────────────────────────────────────────────
 *.class
 *.jar
 !gradle/wrapper/gradle-wrapper.jar
 *.war
 *.ear
-*.zip
-*.tar.gz
-*.rar
 
-# OS
+# ── Android signing — never commit keystores or key material ──────────────────
+*.jks
+*.keystore
+release.properties
+
+# ── Compiled native libraries ─────────────────────────────────────────────────
+*.so
+
+# ── Android local config ──────────────────────────────────────────────────────
+local.properties
+
+# ── OS artefacts ─────────────────────────────────────────────────────────────
+.DS_Store
 Thumbs.db
+desktop.ini
 *.swp
 *.swo
 *~
 .project
 .buildpath
 
-# Dependencies
-.m2/
-node_modules/
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
 
-# Test coverage
+# ── Archives (generated; source archives are committed explicitly) ─────────────
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# ── Test coverage ─────────────────────────────────────────────────────────────
 coverage/
 *.lcov
+
+# ── Misc tooling ──────────────────────────────────────────────────────────────
+.m2/
+node_modules/

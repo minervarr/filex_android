@@ -2,27 +2,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:paddingHorizontal="16dp"
     android:paddingVertical="10dp"
+    android:gravity="center_vertical"
     android:background="?attr/selectableItemBackground">
 
-    <TextView
-        android:id="@+id/tvName"
-        android:layout_width="match_parent"
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:textColor="#212121"
-        android:maxLines="1"
-        android:ellipsize="middle" />
+        android:layout_marginEnd="8dp"
+        android:focusable="false"
+        android:clickable="false"
+        android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/tvMeta"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:textColor="#757575"
-        android:layout_marginTop="2dp"
-        android:maxLines="1" />
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="#212121"
+            android:maxLines="1"
+            android:ellipsize="middle" />
+
+        <TextView
+            android:id="@+id/tvMeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#757575"
+            android:layout_marginTop="2dp"
+            android:maxLines="1" />
+
+    </LinearLayout>
 
 </LinearLayout>

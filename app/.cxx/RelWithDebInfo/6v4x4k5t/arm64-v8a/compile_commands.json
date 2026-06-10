@@ -1,7 +1,0 @@
-[
-{
-  "directory": "C:/Users/incxiuefb/Documents/Files/clone/filex_android/app/.cxx/RelWithDebInfo/6v4x4k5t/arm64-v8a",
-  "command": "C:\\PPProgam\\android_sdk\\ndk\\27.0.12077973\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=aarch64-none-linux-android30 --sysroot=C:/PPProgam/android_sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dfilex_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -std=c++17 -O2 -g -DNDEBUG -fPIC -std=c++17 -o CMakeFiles\\filex.dir\\filex_core.cpp.o -c C:\\Users\\incxiuefb\\Documents\\Files\\clone\\filex_android\\app\\src\\main\\cpp\\filex_core.cpp",
-  "file": "C:\\Users\\incxiuefb\\Documents\\Files\\clone\\filex_android\\app\\src\\main\\cpp\\filex_core.cpp"
-}
-]
